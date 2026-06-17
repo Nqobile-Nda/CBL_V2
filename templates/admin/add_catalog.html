@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Add Catalog Item{% endblock %}
+
+{% block content %}
+
+<form id="add-item-form" method="POST">
+    <label>Name:</label>
+    <input type="text" name="name" title="name"></br>
+
+    <label>Price:</label>
+    <input type="number" name="price" title="price"></br>
+
+    <label>Image</label>
+    <input type="file" name="image" title="image"></br>
+
+    <label>Description:</label>
+    <input type="text" name="description" title="description"></br>
+
+    <button id="add-item-form-button" type="submit">Add Item</button>
+</form>
+
+{% endblock %}
