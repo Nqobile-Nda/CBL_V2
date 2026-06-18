@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const addItemForm = document.getElementById("add-item-form");
     const addItemFormButton = document.getElementById("add-item-form-button");
 
+    async function loadCatalog() {
+        const response = await fetch("/api/catalog");
+        const catalog = await response.json()
+        return catalog;
+    }
+
     async function addItem() {
         const  data = {
             name: addItemForm.name.value,
