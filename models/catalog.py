@@ -41,7 +41,7 @@ def add_catalog_item(name, image, price, description, time_created, time_edited)
 def load_catalog():
     conn, cur = database_connection()
     cur.execute("SELECT * FROM catalog")
-    catalog = cur.fetchall()
+    catalog = [dict(row) for row in cur.fetchall()]
 
     conn.close()
     return catalog
