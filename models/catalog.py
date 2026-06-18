@@ -26,12 +26,12 @@ def create_catalog_table():
     return print("Catalog table has been created")
 
 
-def add_catalog_item(name, image, price, description, time_created, time_edited):
+def add_catalog_item(name, image, category, price, description, time_created, time_edited):
     conn, cur = database_connection()
     cur.execute("""
-    INSERT INTO catalog (name, image, price, description, created_at, last_edited_at)
-    VALUES (?,?,?,?,?,?)
-    """, (name, image, price, description, time_created, time_edited))
+    INSERT INTO catalog (name, image, category, price, description, created_at, last_edited_at)
+    VALUES (?,?,?,?,?,?,?)
+    """, (name, image, category, price, description, time_created, time_edited))
     conn.commit()
     conn.close()
 
