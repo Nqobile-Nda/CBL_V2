@@ -14,6 +14,7 @@ def create_catalog_table():
     item_id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     image TEXT NOT NULL,
+    category TEXT NOT NULL,
     price TEXT NOT NULL,
     description TEXT NOT NULL,
     created_at TEXT NOT NULL,
