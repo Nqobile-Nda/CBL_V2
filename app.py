@@ -45,6 +45,11 @@ def add_admin_catalog_route():
         return jsonify({"success": "Item has been successfully added."})
 
 
+@app.route("/edit_admin_catalog")
+def edit_admin_page():
+    return render_template("admin/edit_catalog.html")
+
+
 @app.route("/api/catalog")
 def catalog_route():
     catalog = load_catalog()
