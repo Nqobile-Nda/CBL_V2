@@ -11,10 +11,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         return catalog;
     }
 
+    const adminCatalog = document.getElementById("admin-catalog");
+
+    async function renderAdminCatalog() {
+        const catalog = await loadCatalog();
+        adminCatalog.innerHTML = catalog.map(item => {
+            return `<div class="admin-catalog-card" data-name=${item.name}>
+            <p>${item.name}</p>
+            <p>${item.category}</p>
+            <p>${item.price}</p>
+            <p>${item.description}</p>
+            <img src="${item.image}" alt="${item.name}">
+            </div>`
+        }).join('');
+    }
+
+
     async function addItem() {
         const  data = {
             name: addItemForm.name.value,
             image: addItemForm.image.value,
+            category: addItemForm.category.value,
             price: addItemForm.price.value,
             description: addItemForm.description.value
         }
@@ -33,10 +50,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    if (addItemForm) {
+        addItemForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            await addItem();
+        });
+    }
 
-    addItemForm.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        await addItem();
-    })
+
+    if (adminCatalog) {
+        renderAdminCatalog();
+        return;
+    }
 
 });
