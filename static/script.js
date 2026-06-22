@@ -15,39 +15,50 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function renderAdminCatalog() {
         const catalog = await loadCatalog();
+
         adminCatalog.innerHTML = catalog.map(item => {
-            return `<div class="admin-catalog-card" data-name=${item.name}>
+            return `<div class="admin-catalog-card">
             <p>${item.name}</p>
             <p>${item.category}</p>
             <p>${item.price}</p>
             <p>${item.description}</p>
             <img src="${item.image}" alt="${item.name}">
+            <button type="button">Edit</button>
             </div>`
         }).join('');
     }
 
 
     async function addItem() {
-        const  data = {
-            name: addItemForm.name.value,
-            image: addItemForm.image.value,
-            category: addItemForm.category.value,
-            price: addItemForm.price.value,
-            description: addItemForm.description.value
+        const formData = new FormData();
+        formData.append('name', addItemForm.name.value);
+        formData.append('category', addItemForm.category.value);
+        formData.append('price', addItemForm.price.value);
+        formData.append('description', addItemForm.description.value);
+
+        const fileInput = addItemForm.image;
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            formData.append('image', fileInput.files[0]);
         }
 
         const response = await fetch("/api/add_admin_catalog", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
+            body: formData
         });
 
         const result = await response.json();
         if (response.ok) {
             notificationBar.textContent = result.success;
+        } else {
+            notificationBar.textContent = result.error || 'Failed to add item';
         }
+    }
+
+    const editItemForm = document.getElementById("edit-item-form");
+
+    if (adminCatalog) {
+    renderAdminCatalog();
+    return;
     }
 
     if (addItemForm) {
@@ -56,11 +67,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             await addItem();
         });
     }
-
-
-    if (adminCatalog) {
-        renderAdminCatalog();
-        return;
-    }
-
 });
