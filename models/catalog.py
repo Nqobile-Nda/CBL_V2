@@ -27,6 +27,15 @@ def create_catalog_table():
     return print("Catalog table has been created")
 
 
+def load_catalog():
+    conn, cur = database_connection()
+    cur.execute("SELECT * FROM catalog")
+    catalog = [dict(row) for row in cur.fetchall()]
+
+    conn.close()
+    return catalog
+
+
 def add_catalog_item(name, image, category, price, description, time_created, time_edited):
     conn, cur = database_connection()
     cur.execute("""
@@ -37,12 +46,3 @@ def add_catalog_item(name, image, category, price, description, time_created, ti
     conn.close()
 
     return
-
-
-def load_catalog():
-    conn, cur = database_connection()
-    cur.execute("SELECT * FROM catalog")
-    catalog = [dict(row) for row in cur.fetchall()]
-
-    conn.close()
-    return catalog
