@@ -3,11 +3,16 @@ from models.catalog import create_catalog_table, load_catalog, add_catalog_item
 import time
 import os
 from dotenv import load_dotenv
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
 load_dotenv()
-app.sercet_key = os.environ.get("secret_key")
+app.secret_key = os.environ.get("secret_key")
+
+UPLOAD_FOLDER = "static/images"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 create_catalog_table()
 
@@ -30,19 +35,29 @@ def add_admin_catalog_page():
 
 @app.route("/api/add_admin_catalog", methods=["POST"])
 def add_admin_catalog_route():
-    data = request.get_json()
-
-    name = data.get("name")
-    image = data.get("image")
-    category = data.get("category")
-    price = data.get("price")
-    description = data.get("description")
+    name = request.form.get("name")
+    category = request.form.get("category")
+    price = request.form.get("price")
+    description = request.form.get("description")
     created_at = time.strftime("%Y-%m-%d %H:%M:%S")
     last_edited_at = "Not edited yet"
 
-    if name and price and image and description and category:
-        add_catalog_item(name, image, category, price, description, created_at, last_edited_at)
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'}), 400
+
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    filename = secure_filename(file.filename)
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(image_path)
+
+    if name and price and description and category:
+        add_catalog_item(name, image_path, category, price, description, created_at, last_edited_at)
         return jsonify({"success": "Item has been successfully added."})
+
+    return jsonify({'error': 'Missing required fields'}), 400
 
 
 @app.route("/edit_admin_catalog")
