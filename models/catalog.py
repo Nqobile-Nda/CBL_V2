@@ -46,3 +46,28 @@ def add_catalog_item(name, image, category, price, description, time_created, ti
     conn.close()
 
     return
+
+
+def load_catalog_item(item_id):
+    conn, cur = database_connection()
+    cur.execute("SELECT * FROM catalog WHERE item_id = ?", (item_id,))
+    item = cur.fetchone()
+    conn.close()
+    return dict(item) if item else None
+
+
+def update_catalog_item(item_id, name, image, category, price, description, time_edited):
+    conn, cur = database_connection()
+    if image:
+        cur.execute("""
+        UPDATE catalog SET name=?, image=?, category=?, price=?, description=?, last_edited_at=?
+        WHERE item_id=?
+        """, (name, image, category, price, description, time_edited, item_id))
+    else:
+        cur.execute("""
+        UPDATE catalog SET name=?, category=?, price=?, description=?, last_edited_at=?
+        WHERE item_id=?
+        """, (name, category, price, description, time_edited, item_id))
+    conn.commit()
+    conn.close()
+    return
